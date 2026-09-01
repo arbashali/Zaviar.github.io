@@ -1,3 +1,4 @@
+/* ===== RESET & BASE ===== */
 * {
     margin: 0;
     padding: 0;
@@ -5,48 +6,410 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     line-height: 1.6;
-    background-color: #f0f4f8;
-    color: #333;
+    color: #1a1a1a;
+    background: #f8f9fa;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    background: white;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #111;
+}
+
+.logo span {
+    color: #2563eb;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 35px;
+}
+
+.nav-links a {
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #2563eb;
+}
+
+.nav-icons {
+    display: flex;
+    gap: 22px;
+    font-size: 1.2rem;
+}
+
+.nav-icons a {
+    position: relative;
+    transition: color 0.3s;
+}
+
+.nav-icons a:hover {
+    color: #2563eb;
+}
+
+.cart-count {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.7rem;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== HERO ===== */
+.hero {
+    height: 500px;
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600&h=800&fit=crop') center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+}
+
+.hero-content h1 {
+    font-size: 3.2rem;
+    margin-bottom: 15px;
+    font-weight: 800;
+}
+
+.hero-content p {
+    font-size: 1.25rem;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+.btn {
+    display: inline-block;
+    background: #2563eb;
+    color: white;
+    padding: 14px 36px;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+/* ===== FEATURES ===== */
+.features {
+    padding: 50px 0;
+    background: white;
+}
+
+.features .container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    text-align: center;
+}
+
+.feature i {
+    font-size: 2rem;
+    color: #2563eb;
+    margin-bottom: 12px;
+}
+
+.feature h3 {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+.feature p {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* ===== PRODUCTS ===== */
+.products {
+    padding: 70px 0;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.section-header h2 {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+}
+
+.section-header p {
+    color: #666;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 30px;
+}
+
+.product-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+}
+
+.product-img {
+    position: relative;
+    height: 260px;
+    overflow: hidden;
+}
+
+.product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.product-card:hover .product-img img {
+    transform: scale(1.08);
+}
+
+.badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: #2563eb;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge.sale {
+    background: #ef4444;
+}
+
+.product-info {
     padding: 20px;
 }
 
-header {
-    background-color: #2563eb;
-    color: white;
-    padding: 40px 20px;
-    text-align: center;
-    border-radius: 12px;
-    margin-bottom: 30px;
+.product-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
 }
 
-main {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    max-width: 600px;
-    margin: 0 auto;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+.rating {
+    color: #f59e0b;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
 }
 
-button {
-    background-color: #2563eb;
+.rating span {
+    color: #888;
+    margin-left: 5px;
+}
+
+.price {
+    margin-bottom: 15px;
+}
+
+.price .current {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111;
+}
+
+.price .old {
+    font-size: 0.95rem;
+    color: #999;
+    text-decoration: line-through;
+    margin-left: 8px;
+}
+
+.add-to-cart {
+    width: 100%;
+    padding: 12px;
+    background: #111;
     color: white;
     border: none;
-    padding: 12px 24px;
-    font-size: 16px;
     border-radius: 8px;
+    font-weight: 600;
     cursor: pointer;
-    margin-top: 20px;
+    transition: background 0.3s;
 }
 
-button:hover {
-    background-color: #1d4ed8;
+.add-to-cart:hover {
+    background: #2563eb;
 }
 
-footer {
+/* ===== FOOTER ===== */
+.footer {
+    background: #111;
+    color: #ddd;
+    padding: 60px 0 20px;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.footer h3, .footer h4 {
+    color: white;
+    margin-bottom: 20px;
+}
+
+.footer ul {
+    list-style: none;
+}
+
+.footer ul li {
+    margin-bottom: 10px;
+}
+
+.footer a:hover {
+    color: #2563eb;
+}
+
+.newsletter {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.newsletter input {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    outline: none;
+}
+
+.newsletter button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 0 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.footer-bottom {
+    border-top: 1px solid #333;
+    padding-top: 20px;
     text-align: center;
-    margin-top: 40px;
-    color: #666;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+/* ===== WhatsApp Floating Button ===== */
+.whatsapp-float {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 30px;
+    right: 30px;
+    background-color: #25D366;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 32px;
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.whatsapp-float:hover {
+    background-color: #1ebe57;
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5);
+}
+
+.whatsapp-float i {
+    margin-top: 2px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .features .container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .hero-content h1 {
+        font-size: 2.4rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .features .container,
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .whatsapp-float {
+        width: 55px;
+        height: 55px;
+        font-size: 28px;
+        bottom: 20px;
+        right: 20px;
+    }
 }
