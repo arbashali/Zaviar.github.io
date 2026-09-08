@@ -1,692 +1,163 @@
 const products = [
-  {
-    id: 1,
-    name: 'Wireless Noise-Cancelling Headphones',
-    category: 'Electronics',
-    emoji: '🎧',
-    price: 7499,
-    old: 8999,
-    rating: 4.7,
-    reviews: 386,
-    badge: '17% OFF'
-  },
-  {
-    id: 2,
-    name: 'Smart Fitness Watch with Heart Rate Monitor',
-    category: 'Sports',
-    emoji: '⌚',
-    price: 5299,
-    old: 6499,
-    rating: 4.5,
-    reviews: 211,
-    badge: '18% OFF'
-  },
-  {
-    id: 3,
-    name: 'Everyday Comfort Running Sneakers',
-    category: 'Fashion',
-    emoji: '👟',
-    price: 3799,
-    old: 4999,
-    rating: 4.6,
-    reviews: 143,
-    badge: '24% OFF'
-  },
-  {
-    id: 4,
-    name: 'Portable Blender for Smoothies',
-    category: 'Home',
-    emoji: '🥤',
-    price: 2899,
-    old: 3499,
-    rating: 4.4,
-    reviews: 98,
-    badge: '17% OFF'
-  },
-  {
-    id: 5,
-    name: 'Minimal Skincare Essentials Set',
-    category: 'Beauty',
-    emoji: '🧴',
-    price: 2399,
-    old: 2999,
-    rating: 4.8,
-    reviews: 267,
-    badge: '20% OFF'
-  },
-  {
-    id: 6,
-    name: 'Compact Mechanical Keyboard',
-    category: 'Electronics',
-    emoji: '⌨️',
-    price: 4599,
-    old: 5499,
-    rating: 4.5,
-    reviews: 175,
-    badge: '16% OFF'
-  },
-  {
-    id: 7,
-    name: 'Soft Cotton Everyday Tote Bag',
-    category: 'Fashion',
-    emoji: '👜',
-    price: 1799,
-    old: 2199,
-    rating: 4.3,
-    reviews: 89,
-    badge: '18% OFF'
-  },
-  {
-    id: 8,
-    name: 'LED Desk Lamp with USB Charging',
-    category: 'Home',
-    emoji: '💡',
-    price: 1999,
-    old: 2699,
-    rating: 4.6,
-    reviews: 122,
-    badge: '26% OFF'
-  }
+  { id: 1, name: 'SoundPro Wireless Headphones', category: 'Electronics', price: 8499, rating: 4.8, reviews: 124, icon: '🎧', featured: 10 },
+  { id: 2, name: 'Everyday Cotton Sneakers', category: 'Fashion', price: 4999, rating: 4.6, reviews: 89, icon: '👟', featured: 9 },
+  { id: 3, name: 'Minimal Ceramic Table Lamp', category: 'Home', price: 3299, rating: 4.7, reviews: 56, icon: '💡', featured: 8 },
+  { id: 4, name: 'Glow Essentials Skincare Set', category: 'Beauty', price: 2799, rating: 4.9, reviews: 203, icon: '✨', featured: 10 },
+  { id: 5, name: 'Smart Fitness Watch', category: 'Sports', price: 6999, rating: 4.5, reviews: 71, icon: '⌚', featured: 7 },
+  { id: 6, name: 'Portable Bluetooth Speaker', category: 'Electronics', price: 3899, rating: 4.4, reviews: 118, icon: '🔊', featured: 8 },
+  { id: 7, name: 'Soft Knit Lounge Set', category: 'Fashion', price: 3599, rating: 4.6, reviews: 44, icon: '🧥', featured: 6 },
+  { id: 8, name: 'Bamboo Storage Basket', category: 'Home', price: 1899, rating: 4.3, reviews: 37, icon: '🧺', featured: 5 }
 ];
 
-
-/* --------------------------------------------------
-   CART & WISHLIST
-   -------------------------------------------------- */
-
-let cart = JSON.parse(
-  localStorage.getItem('shop-at-arbash-cart') || '[]'
-);
-
-let wishlist = JSON.parse(
-  localStorage.getItem('shop-at-arbash-wishlist') || '[]'
-);
-
 let activeCategory = 'all';
-let query = '';
+let cart = [];
+let toastTimer;
 
+const money = value => `PKR ${value.toLocaleString('en-PK')}`;
+const get = id => document.getElementById(id);
 
-/* --------------------------------------------------
-   HELPERS
-   -------------------------------------------------- */
-
-const money = (n) => 'PKR ' + n.toLocaleString('en-PK');
-
-
-function save() {
-  localStorage.setItem(
-    'shop-at-arbash-cart',
-    JSON.stringify(cart)
-  );
-
-  localStorage.setItem(
-    'shop-at-arbash-wishlist',
-    JSON.stringify(wishlist)
-  );
-
-  updateCartCount();
+function stars(rating) {
+  const filled = Math.round(rating);
+  return `${'★'.repeat(filled)}${'☆'.repeat(5 - filled)}`;
 }
 
-
-function updateCartCount() {
-  const cartCount = document.getElementById('cartCount');
-
-  if (cartCount) {
-    cartCount.textContent = cart.reduce(
-      (sum, item) => sum + item.qty,
-      0
-    );
-  }
+function filteredProducts() {
+  const query = get('searchInput').value.trim().toLowerCase();
+  return products.filter(product => {
+    const categoryMatch = activeCategory === 'all' || product.category === activeCategory;
+    const queryMatch = !query || `${product.name} ${product.category}`.toLowerCase().includes(query);
+    return categoryMatch && queryMatch;
+  });
 }
-
-
-function stars(r) {
-  return '★'.repeat(Math.round(r)) +
-    '<small> ' + r + '</small>';
-}
-
-
-/* --------------------------------------------------
-   PRODUCTS
-   -------------------------------------------------- */
 
 function renderProducts() {
-  let filtered = products.filter(
-    (p) =>
-      (activeCategory === 'all' ||
-        p.category === activeCategory) &&
-      p.name.toLowerCase().includes(
-        query.toLowerCase()
-      )
-  );
-
-  const sortElement = document.getElementById('sort');
-
-  if (sortElement) {
-    const sort = sortElement.value;
-
-    if (sort === 'priceLow') {
-      filtered.sort((a, b) => a.price - b.price);
-    }
-
-    if (sort === 'priceHigh') {
-      filtered.sort((a, b) => b.price - a.price);
-    }
-
-    if (sort === 'rating') {
-      filtered.sort((a, b) => b.rating - a.rating);
-    }
-  }
-
-  const title = document.getElementById('productsTitle');
-  const info = document.getElementById('resultInfo');
-  const productsContainer = document.getElementById('products');
-
-  if (!productsContainer) {
-    return;
-  }
-
-  if (title) {
-    title.textContent =
-      activeCategory === 'all'
-        ? 'Featured products'
-        : activeCategory + ' picks';
-  }
-
-  if (info) {
-    info.textContent =
-      filtered.length +
-      ' product' +
-      (filtered.length === 1 ? '' : 's') +
-      ' found';
-  }
-
-  productsContainer.innerHTML = filtered.length
-    ? filtered
-        .map(
-          (p) => `
-            <article class="card">
-
-              <span class="badge">
-                ${p.badge}
-              </span>
-
-              <button
-                class="wish ${
-                  wishlist.includes(p.id)
-                    ? 'active'
-                    : ''
-                }"
-                onclick="toggleWish(${p.id})"
-                aria-label="Add to wishlist"
-              >
-                ${
-                  wishlist.includes(p.id)
-                    ? '♥'
-                    : '♡'
-                }
-              </button>
-
-              <div class="product-img">
-                ${p.emoji}
-              </div>
-
-              <div class="card-body">
-
-                <p class="product-name">
-                  ${p.name}
-                </p>
-
-                <div class="rating">
-                  ${'★'.repeat(
-                    Math.round(p.rating)
-                  )}
-                  <small>
-                    ${p.rating} (${p.reviews})
-                  </small>
-                </div>
-
-                <div class="price">
-                  ${money(p.price)}
-                  <span class="old">
-                    ${money(p.old)}
-                  </span>
-                </div>
-
-                <div class="stock">
-                  ✓ In stock
-                </div>
-
-                <button
-                  class="add"
-                  onclick="addToCart(${p.id})"
-                >
-                  Add to cart
-                </button>
-
-              </div>
-
-            </article>
-          `
-        )
-        .join('')
-    : `
-        <div class="empty">
-          No products match your search.
-          Try a different category or keyword.
-        </div>
-      `;
-}
-
-
-/* --------------------------------------------------
-   CATEGORY FILTER
-   -------------------------------------------------- */
-
-function filterCategory(c, el) {
-  activeCategory = c;
-  query = '';
-
-  const searchInput =
-    document.getElementById('searchInput');
-
-  if (searchInput) {
-    searchInput.value = '';
-  }
-
-  document
-    .querySelectorAll('.nav button')
-    .forEach((button) => {
-      button.classList.remove('active');
-    });
-
-  if (el) {
-    el.classList.add('active');
-  }
-
-  renderProducts();
-
-  const productsContainer =
-    document.getElementById('products');
-
-  if (productsContainer) {
-    productsContainer.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    });
-  }
-}
-
-
-/* --------------------------------------------------
-   CART
-   -------------------------------------------------- */
-
-function addToCart(id) {
-  const found = cart.find(
-    (item) => item.id === id
-  );
-
-  if (found) {
-    found.qty++;
-  } else {
-    cart.push({
-      id: id,
-      qty: 1
-    });
-  }
-
-  save();
-
-  showToast('Added to your cart');
-}
-
-
-function openCart() {
-  renderCart();
-
-  const modal =
-    document.getElementById('cartModal');
-
-  if (modal) {
-    modal.classList.add('show');
-  }
-}
-
-
-function renderCart() {
-  const host =
-    document.getElementById('cartItems');
-
-  const total =
-    document.getElementById('cartTotal');
-
-  if (!host) {
-    return;
-  }
-
-  if (!cart.length) {
-    host.innerHTML = `
-      <p style="color:#677085;padding:20px 0">
-        Your cart is empty.
-        Add a product to begin shopping.
-      </p>
-    `;
-
-    if (total) {
-      total.textContent = money(0);
-    }
-
-    return;
-  }
-
-  host.innerHTML = cart
-    .map((item) => {
-      const product = products.find(
-        (p) => p.id === item.id
-      );
-
-      if (!product) {
-        return '';
-      }
-
-      return `
-        <div class="cart-row">
-
-          <div class="cart-icon">
-            ${product.emoji}
-          </div>
-
-          <div>
-
-            <b>
-              ${product.name}
-            </b>
-
-            <p>
-              ${money(product.price)}
-            </p>
-
-            <div class="qty">
-
-              <button
-                onclick="changeQty(
-                  ${product.id},
-                  -1
-                )"
-              >
-                −
-              </button>
-
-              <b>
-                ${item.qty}
-              </b>
-
-              <button
-                onclick="changeQty(
-                  ${product.id},
-                  1
-                )"
-              >
-                +
-              </button>
-
-              <button
-                class="remove"
-                onclick="removeItem(
-                  ${product.id}
-                )"
-              >
-                Remove
-              </button>
-
-            </div>
-
-          </div>
-
-          <b>
-            ${money(
-              product.price * item.qty
-            )}
-          </b>
-
-        </div>
-      `;
-    })
-    .join('');
-
-  const cartTotal = cart.reduce(
-    (sum, item) => {
-      const product = products.find(
-        (p) => p.id === item.id
-      );
-
-      return product
-        ? sum + product.price * item.qty
-        : sum;
-    },
-    0
-  );
-
-  if (total) {
-    total.textContent = money(cartTotal);
-  }
-}
-
-
-function changeQty(id, d) {
-  const item = cart.find(
-    (x) => x.id === id
-  );
-
-  if (!item) {
-    return;
-  }
-
-  item.qty += d;
-
-  if (item.qty < 1) {
-    cart = cart.filter(
-      (x) => x.id !== id
-    );
-  }
-
-  save();
-  renderCart();
-}
-
-
-function removeItem(id) {
-  cart = cart.filter(
-    (item) => item.id !== id
-  );
-
-  save();
-  renderCart();
-}
-
-
-/* --------------------------------------------------
-   WISHLIST
-   -------------------------------------------------- */
-
-function toggleWish(id) {
-  if (wishlist.includes(id)) {
-    wishlist = wishlist.filter(
-      (x) => x !== id
-    );
-
-    showToast(
-      'Removed from your wishlist'
-    );
-  } else {
-    wishlist = [
-      ...wishlist,
-      id
-    ];
-
-    showToast(
-      'Saved to your wishlist'
-    );
-  }
-
-  save();
-  renderProducts();
-}
-
-
-/* --------------------------------------------------
-   MODALS
-   -------------------------------------------------- */
-
-function closeModal(id) {
-  const modal =
-    document.getElementById(id);
-
-  if (modal) {
-    modal.classList.remove('show');
-  }
-}
-
-
-function startCheckout() {
-  if (!cart.length) {
-    showToast('Your cart is empty');
-    return;
-  }
-
-  closeModal('cartModal');
-
-  const checkout =
-    document.getElementById(
-      'checkoutModal'
-    );
-
-  if (checkout) {
-    checkout.classList.add('show');
-  }
-}
-
-
-/* --------------------------------------------------
-   CHECKOUT
-   -------------------------------------------------- */
-
-function placeOrder(e) {
-  e.preventDefault();
-
-  cart = [];
-
-  save();
-
-  closeModal('checkoutModal');
-
-  showToast(
-    'Order placed successfully — thank you!'
-  );
-}
-
-
-/* --------------------------------------------------
-   TOAST
-   -------------------------------------------------- */
-
-function showToast(msg) {
-  const toast =
-    document.getElementById('toast');
-
-  if (!toast) {
-    return;
-  }
-
-  toast.textContent = msg;
-
-  toast.classList.add('show');
-
-  clearTimeout(
-    window.toastTimer
-  );
-
-  window.toastTimer = setTimeout(
-    () => {
-      toast.classList.remove('show');
-    },
-    2600
-  );
-}
-
-
-/* --------------------------------------------------
-   SEARCH
-   -------------------------------------------------- */
-
-const searchForm =
-  document.getElementById('searchForm');
-
-if (searchForm) {
-  searchForm.addEventListener(
-    'submit',
-    (e) => {
-      e.preventDefault();
-
-      const searchInput =
-        document.getElementById(
-          'searchInput'
-        );
-
-      const searchCategory =
-        document.getElementById(
-          'searchCategory'
-        );
-
-      query = searchInput
-        ? searchInput.value.trim()
-        : '';
-
-      activeCategory =
-        searchCategory
-          ? searchCategory.value
-          : 'all';
-
-      renderProducts();
-
-      const productsContainer =
-        document.getElementById(
-          'products'
-        );
-
-      if (productsContainer) {
-        productsContainer.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
-    }
-  );
-}
-
-
-/* --------------------------------------------------
-   MODAL BACKDROP
-   -------------------------------------------------- */
-
-document
-  .querySelectorAll('.modal')
-  .forEach((modal) => {
-    modal.addEventListener(
-      'click',
-      (e) => {
-        if (e.target === modal) {
-          closeModal(modal.id);
-        }
-      }
-    );
+  const sort = get('sort').value;
+  const list = filteredProducts().sort((a, b) => {
+    if (sort === 'priceLow') return a.price - b.price;
+    if (sort === 'priceHigh') return b.price - a.price;
+    if (sort === 'rating') return b.rating - a.rating;
+    return b.featured - a.featured;
   });
 
+  get('products').innerHTML = list.length ? list.map(product => `
+    <article class="product">
+      <div class="product-image" aria-hidden="true">${product.icon}</div>
+      <div class="product-body">
+        <div class="product-category">${product.category}</div>
+        <h3>${product.name}</h3>
+        <div class="rating" aria-label="Rated ${product.rating} out of 5">
+          ${stars(product.rating)} <span>${product.rating} (${product.reviews})</span>
+        </div>
+        <div class="price-row">
+          <div class="price">${money(product.price)}</div>
+          <button class="add-btn" onclick="addToCart(${product.id})">Add to cart</button>
+        </div>
+      </div>
+    </article>
+  `).join('') : '<div class="empty">No products matched your search. Try another category or keyword.</div>';
 
-/* --------------------------------------------------
-   INITIALIZE
-   -------------------------------------------------- */
+  const label = activeCategory === 'all' ? 'Featured products' : `${activeCategory} products`;
+  get('productsTitle').textContent = label;
+  get('resultInfo').textContent = `${list.length} ${list.length === 1 ? 'item' : 'items'} selected for you`;
+}
 
-updateCartCount();
-renderProducts();
+function filterCategory(category, button) {
+  activeCategory = category;
+  document.querySelectorAll('.nav button').forEach(item => item.classList.remove('active'));
+  if (button) button.classList.add('active');
+  else {
+    const navButton = [...document.querySelectorAll('.nav button')].find(item => item.textContent.toLowerCase().includes(category.toLowerCase()));
+    if (navButton) navButton.classList.add('active');
+  }
+  renderProducts();
+  get('products').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function addToCart(id) {
+  const existing = cart.find(item => item.id === id);
+  if (existing) existing.quantity += 1;
+  else cart.push({ id, quantity: 1 });
+  updateCart();
+  const product = products.find(item => item.id === id);
+  showToast(`${product.name} added to your cart.`);
+}
+
+function changeQuantity(id, amount) {
+  const item = cart.find(entry => entry.id === id);
+  if (!item) return;
+  item.quantity += amount;
+  if (item.quantity <= 0) cart = cart.filter(entry => entry.id !== id);
+  updateCart();
+}
+
+function updateCart() {
+  const count = cart.reduce((total, item) => total + item.quantity, 0);
+  const subtotal = cart.reduce((total, item) => {
+    const product = products.find(productItem => productItem.id === item.id);
+    return total + product.price * item.quantity;
+  }, 0);
+  get('cartCount').textContent = count;
+  get('cartTotal').textContent = money(subtotal);
+  get('cartItems').innerHTML = cart.length ? cart.map(item => {
+    const product = products.find(productItem => productItem.id === item.id);
+    return `<div class="cart-line">
+      <div><strong>${product.icon} ${product.name}</strong><small>${money(product.price)} each</small></div>
+      <div class="qty"><button aria-label="Decrease quantity" onclick="changeQuantity(${item.id}, -1)">−</button><span>${item.quantity}</span><button aria-label="Increase quantity" onclick="changeQuantity(${item.id}, 1)">+</button></div>
+    </div>`;
+  }).join('') : '<p style="color:#677085">Your cart is empty. Add something you love!</p>';
+}
+
+function openCart() {
+  updateCart();
+  openModal('cartModal');
+}
+
+function openModal(id) {
+  get(id).classList.add('open');
+  document.body.classList.add('modal-open');
+}
+
+function closeModal(id) {
+  get(id).classList.remove('open');
+  if (!document.querySelector('.modal.open')) document.body.classList.remove('modal-open');
+}
+
+function startCheckout() {
+  if (!cart.length) return showToast('Your cart is empty. Add a product before checkout.');
+  closeModal('cartModal');
+  openModal('checkoutModal');
+}
+
+function placeOrder(event) {
+  event.preventDefault();
+  closeModal('checkoutModal');
+  cart = [];
+  updateCart();
+  showToast('Thank you! Your order has been placed successfully.');
+  event.target.reset();
+}
+
+function showToast(message) {
+  const toast = get('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderProducts();
+  updateCart();
+  get('searchForm').addEventListener('submit', event => {
+    event.preventDefault();
+    renderProducts();
+    get('products').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  get('searchInput').addEventListener('input', renderProducts);
+  document.querySelectorAll('.modal').forEach(modal => modal.addEventListener('click', event => {
+    if (event.target === modal) closeModal(modal.id);
+  }));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') document.querySelectorAll('.modal.open').forEach(modal => closeModal(modal.id));
+  });
+});
