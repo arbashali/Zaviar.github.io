@@ -112,6 +112,11 @@ function openCart() {
   openModal('cartModal');
 }
 
+function openLogin() {
+  openModal('loginModal');
+  setTimeout(() => get('loginEmail').focus(), 0);
+}
+
 function openModal(id) {
   get(id).classList.add('open');
   document.body.classList.add('modal-open');
@@ -126,6 +131,19 @@ function startCheckout() {
   if (!cart.length) return showToast('Your cart is empty. Add a product before checkout.');
   closeModal('cartModal');
   openModal('checkoutModal');
+}
+
+function handleLogin(event) {
+  event.preventDefault();
+  const email = get('loginEmail').value.trim();
+  const accountAction = get('accountAction');
+  const firstName = email.split('@')[0].replace(/[._-]+/g, ' ');
+  const displayName = firstName ? firstName.charAt(0).toUpperCase() + firstName.slice(1) : 'Customer';
+
+  closeModal('loginModal');
+  accountAction.innerHTML = `Hello, ${displayName}<b>My Account</b>`;
+  showToast(`Welcome back, ${displayName}!`);
+  event.target.reset();
 }
 
 function placeOrder(event) {

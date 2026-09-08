@@ -127,6 +127,21 @@ footer p { margin: 8px 0 0; font-size: .78rem; }
 .checkout-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .checkout-form input, .checkout-form select { width: 100%; padding: 12px; color: var(--ink); border: 1px solid var(--line); border-radius: 6px; }
 .checkout-form .full { grid-column: 1 / -1; }
+.login-panel { width: min(430px, 100%); }
+.login-brand { margin-bottom: 12px; color: var(--navy); font-size: 1.25rem; font-weight: 800; letter-spacing: -.05em; }
+.login-brand span { color: var(--coral); font-weight: 500; }
+.login-panel h2 { margin-bottom: 5px; }
+.login-intro { margin: 0 0 22px; color: var(--muted); font-size: .86rem; }
+.login-form { display: grid; gap: 8px; }
+.login-form > label { color: var(--ink); font-size: .78rem; font-weight: 700; }
+.login-form input[type="email"], .login-form input[type="password"] { width: 100%; padding: 12px; color: var(--ink); border: 1px solid var(--line); border-radius: 6px; }
+.login-form input:focus { border-color: var(--gold); outline: 2px solid rgba(255,176,0,.2); }
+.login-options { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 4px 0 12px; }
+.remember { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: .75rem; }
+.remember input { accent-color: var(--gold); }
+.text-button { padding: 0; color: var(--coral); background: transparent; border: 0; font-size: .75rem; font-weight: 700; }
+.text-button:hover { text-decoration: underline; }
+.signup-prompt { margin: 20px 0 0; color: var(--muted); font-size: .78rem; text-align: center; }
 .toast { position: fixed; right: 22px; bottom: 22px; z-index: 80; max-width: min(360px, calc(100% - 44px)); padding: 14px 18px; color: #fff; background: var(--navy); border-left: 4px solid var(--gold); border-radius: 7px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transform: translateY(15px); transition: .25s ease; font-size: .86rem; }
 .toast.show { opacity: 1; transform: translateY(0); }
 
@@ -162,6 +177,7 @@ footer p { margin: 8px 0 0; font-size: .78rem; }
   .deal { align-items: start; flex-direction: column; margin-top: 36px; padding: 26px 22px; }
   .checkout-form { grid-template-columns: 1fr; }
   .checkout-form .full { grid-column: auto; }
+  .login-options { align-items: flex-start; flex-direction: column; }
 }
 @media (max-width: 390px) { .products { grid-template-columns: 1fr; } .categories { grid-template-columns: repeat(2, 1fr); } }
 body.modal-open { overflow: hidden; }

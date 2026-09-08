@@ -17,7 +17,7 @@
   <header class="header">
     <div class="head-main">
 
-      <a class="brand" href="#top">Shop<span>at</span>Zaviar's</a>
+      <a class="brand" href="#top">shop<span>at</span>Zaviar's</a>
 
       <button class="deliver">
         Deliver to
@@ -43,7 +43,7 @@
       </form>
 
       <div class="head-actions">
-        <button class="action" onclick="showToast('Sign-in is ready to connect to your account system.')">
+        <button class="action" id="accountAction" onclick="openLogin()">
           Hello, sign in
           <b>Account & Lists</b>
         </button>
@@ -253,6 +253,33 @@
 
       </form>
 
+    </div>
+  </div>
+
+  <div class="modal" id="loginModal">
+    <div class="panel login-panel">
+      <button class="close" onclick="closeModal('loginModal')" aria-label="Close login">×</button>
+
+      <div class="login-brand">Shop<span>at</span>Zaviar's</div>
+      <h2>Welcome back</h2>
+      <p class="login-intro">Sign in to manage your orders and enjoy a faster checkout.</p>
+
+      <form class="login-form" onsubmit="handleLogin(event)">
+        <label for="loginEmail">Email address</label>
+        <input id="loginEmail" type="email" required autocomplete="email" placeholder="you@example.com" />
+
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" type="password" required minlength="6" autocomplete="current-password" placeholder="Enter your password" />
+
+        <div class="login-options">
+          <label class="remember"><input type="checkbox" /> Remember me</label>
+          <button type="button" class="text-button" onclick="showToast('Password reset is ready to connect to your account system.')">Forgot password?</button>
+        </div>
+
+        <button class="checkout" type="submit">Sign in</button>
+      </form>
+
+      <p class="signup-prompt">New to Arbash's? <button type="button" class="text-button" onclick="showToast('Account creation is ready to connect to your account system.')">Create an account</button></p>
     </div>
   </div>
 
